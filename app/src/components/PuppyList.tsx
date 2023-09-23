@@ -30,6 +30,8 @@ import {
 //carousel
 import Slider from 'react-slick'
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi'
+
+import { AdoptionForm } from './AdoptionForm';
 const settings = {
     dots: true,
     arrows: false,
@@ -117,10 +119,22 @@ const  Carousel = ({puppy}) => {
     )
   }
   
-const PuppyDetailsDrawer = ({ isOpen, onClose, puppy }) => {
+const PuppyDetailsDrawer = ({ isOpen, onClose, puppy, isAdoptionFormOpenForm }) => {
+    const [isAdoptionFormOpen, setAdoptionFormOpen] = useState(false);
+
   if (!puppy) {
     return null;
   }
+
+  const handleAdoptClick = () => {
+    setAdoptionFormOpen(true);
+    console.log(isAdoptionFormOpen)
+  };
+
+  const handleCloseAdoptionForm = () => {
+    setAdoptionFormOpen(false);
+  };
+
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={'xl'}>
     <DrawerOverlay />
@@ -128,25 +142,36 @@ const PuppyDetailsDrawer = ({ isOpen, onClose, puppy }) => {
       <DrawerCloseButton />
       <DrawerHeader>Puppy Details</DrawerHeader>
       <DrawerBody>
-        {/* <Box>
-        <Image boxSize='600px'  src={puppy.photoUrl} alt="pup" borderRadius="sm" />
 
-        </Box> */}
-        {<Carousel puppy={puppy}/>}
+         {/* Display the Adoption Form when isAdoptionFormOpen is true */}
+         {isAdoptionFormOpen || isAdoptionFormOpenForm ? (
+            <AdoptionForm onClose={handleCloseAdoptionForm} puppy={puppy} />
+          ) : (
+            <>
+              <Box>
+                {<Carousel puppy={puppy}/>}
 
-        <p>Name: {puppy.name}</p>
-        <p>Breed: {puppy.breed}</p>
-        <p>Age: {puppy.age}</p>
-        <p>Gender: {puppy.gender}</p>
-        <p>Size: {puppy.size}</p>
-        <p>Is Vaccinated: {puppy.isVaccinated ? "Yes" : "No"}</p>
-        <p>Is Neutered/Spayed: {puppy.isNeutered ? "Yes" : "No"}</p>
-        <p>Personality Traits: {puppy.traits.join(', ')}</p>
-        <p>Personality Description: {puppy.personalityTraits}</p>
-        <p>Vaccination Records: {puppy.vaccinationRecords}</p>
-        <p>Spaying/Neutering Status: {puppy.spayingNeuteringStatus}</p>
-        <p>Special Needs: {puppy.specialNeeds}</p>
-        <p>Notes: {puppy.notes}</p>
+                <p>Name: {puppy.name}</p>
+                <p>Breed: {puppy.breed}</p>
+                <p>Age: {puppy.age}</p>
+                <p>Gender: {puppy.gender}</p>
+                <p>Size: {puppy.size}</p>
+                <p>Is Vaccinated: {puppy.isVaccinated ? "Yes" : "No"}</p>
+                <p>Is Neutered/Spayed: {puppy.isNeutered ? "Yes" : "No"}</p>
+                <p>Personality Traits: {puppy.traits.join(', ')}</p>
+                <p>Personality Description: {puppy.personalityTraits}</p>
+                <p>Vaccination Records: {puppy.vaccinationRecords}</p>
+                <p>Spaying/Neutering Status: {puppy.spayingNeuteringStatus}</p>
+                <p>Special Needs: {puppy.specialNeeds}</p>
+                <p>Notes: {puppy.notes}</p>
+                <button onClick={handleAdoptClick}>Adopt now</button>
+
+              </Box>
+            </>
+          )}
+
+
+        
       </DrawerBody>
     </DrawerContent>
   </Drawer>
@@ -173,13 +198,14 @@ const [searchQuery, setSearchQuery] = useState('');
 
   const apiUrl = 'https://run.mocky.io/v3/75e69216-0adb-4ecb-867b-5415c99440d4';
 
+  const [isAdoptionFormOpen, setAdoptionFormOpen] = useState(false);
+
+  
   useEffect(() => {
     axios
       .get(apiUrl)
       .then((response) => {
         setPuppies(response.data);
-        console.log(response.data);
-        console.log(puppies);
       })
       .catch((error) => {
         console.error('Error fetching puppies:', error);
@@ -189,11 +215,17 @@ const [searchQuery, setSearchQuery] = useState('');
   const handlePuppyClick = (puppy) => {
     setSelectedPuppy(puppy);
     setIsDrawerOpen(true);
+    
   };
 
   const closeDrawer = () => {
     //   setSelectedPuppy(null);
     setIsDrawerOpen(false);
+    setAdoptionFormOpen(false);
+
+  };
+  const handleAdoptClick = () => {
+    setAdoptionFormOpen(true);
   };
 
   return (
@@ -226,7 +258,7 @@ const [searchQuery, setSearchQuery] = useState('');
                 cursor="pointer"
                 onClick={() => handlePuppyClick(puppy)}
               >
-                <CardBody>
+                <CardBody >
                   <Image src={puppy.photoUrl} alt="pup" borderRadius="lg" />
                   <Stack mt="6" spacing="3">
                     <Heading size="md">{puppy.name} </Heading>
@@ -241,8 +273,8 @@ const [searchQuery, setSearchQuery] = useState('');
                 <Divider />
                 <CardFooter>
                   <ButtonGroup spacing="2">
-                    <Button variant="solid" colorScheme="blue">
-                      Buy now
+                    <Button onClick={handleAdoptClick} variant="solid" colorScheme="blue">
+                      Adopt now
                     </Button>
                     <Button variant="ghost" colorScheme="blue">
                       Add to cart
@@ -260,6 +292,7 @@ const [searchQuery, setSearchQuery] = useState('');
         isOpen={isDrawerOpen}
         onClose={closeDrawer}
         puppy={selectedPuppy}
+        isAdoptionFormOpenForm={isAdoptionFormOpen}
       />
     </div>
   );
