@@ -43,7 +43,6 @@ const settings = {
     slidesToShow: 1,
     slidesToScroll: 1,
   }
-// import PuppyDetailsDrawer from './PuppyDetailsDrawer';
 const  Carousel = ({puppy}) => {
 
     // As we have used custom buttons, we need a reference variable to
@@ -119,7 +118,7 @@ const  Carousel = ({puppy}) => {
     )
   }
   
-const PuppyDetailsDrawer = ({ isOpen, onClose, puppy, isAdoptionFormOpenForm }) => {
+const PuppyDetailsDrawer = ({ isOpen, onClose, puppy, isAdoptionFormOpenForm, isPuppyInfoOpen }) => {
     const [isAdoptionFormOpen, setAdoptionFormOpen] = useState(false);
 
   if (!puppy) {
@@ -136,7 +135,7 @@ const PuppyDetailsDrawer = ({ isOpen, onClose, puppy, isAdoptionFormOpenForm }) 
   };
 
   return (
-    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={'xl'}>
+    <Drawer  closeOnOverlayClick={false} isOpen={isOpen} placement="right" onClose={onClose} size={'xl'}>
     <DrawerOverlay />
     <DrawerContent>
       <DrawerCloseButton />
@@ -144,7 +143,7 @@ const PuppyDetailsDrawer = ({ isOpen, onClose, puppy, isAdoptionFormOpenForm }) 
       <DrawerBody>
 
          {/* Display the Adoption Form when isAdoptionFormOpen is true */}
-         {isAdoptionFormOpen || isAdoptionFormOpenForm ? (
+         {(isAdoptionFormOpen ) ? (
             <AdoptionForm onClose={handleCloseAdoptionForm} puppy={puppy} />
           ) : (
             <>
@@ -164,7 +163,7 @@ const PuppyDetailsDrawer = ({ isOpen, onClose, puppy, isAdoptionFormOpenForm }) 
                 <p>Spaying/Neutering Status: {puppy.spayingNeuteringStatus}</p>
                 <p>Special Needs: {puppy.specialNeeds}</p>
                 <p>Notes: {puppy.notes}</p>
-                <button onClick={handleAdoptClick}>Adopt now</button>
+                <Button  mt={4} colorScheme='green'  onClick={handleAdoptClick}>Adopt now</Button>
 
               </Box>
             </>
@@ -196,36 +195,49 @@ const [searchQuery, setSearchQuery] = useState('');
   const [selectedPuppy, setSelectedPuppy] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const apiUrl = 'https://run.mocky.io/v3/75e69216-0adb-4ecb-867b-5415c99440d4';
+  const apiUrlPuppies = 'http://localhost:3001/puppies';
 
   const [isAdoptionFormOpen, setAdoptionFormOpen] = useState(false);
+  const [isPuppyInfoOpen, setPuppyInfoOpen] = useState(true);
 
   
   useEffect(() => {
     axios
-      .get(apiUrl)
+      .get(apiUrlPuppies)
       .then((response) => {
         setPuppies(response.data);
       })
       .catch((error) => {
         console.error('Error fetching puppies:', error);
       });
-  }, []);
+      console.log(isDrawerOpen)
+      if (!isDrawerOpen) {
+        console.log('drawer is closed')
+        setAdoptionFormOpen(false);
+      }
+      }, [isDrawerOpen]);
 
   const handlePuppyClick = (puppy) => {
     setSelectedPuppy(puppy);
     setIsDrawerOpen(true);
+    setPuppyInfoOpen(true);
     
   };
 
   const closeDrawer = () => {
     //   setSelectedPuppy(null);
-    setIsDrawerOpen(false);
     setAdoptionFormOpen(false);
+    setPuppyInfoOpen(true);
+    setSelectedPuppy(null);
+    setIsDrawerOpen(false);
+
+
+    console.log('close drawer')
 
   };
   const handleAdoptClick = () => {
     setAdoptionFormOpen(true);
+    setPuppyInfoOpen(false);
   };
 
   return (
@@ -247,7 +259,7 @@ const [searchQuery, setSearchQuery] = useState('');
         .map((puppy) => (
           <>
 
-            <Box>
+            <Box key={puppy.id}>
               <Card
                 maxW="sm"
                 key={puppy.id}
@@ -257,6 +269,7 @@ const [searchQuery, setSearchQuery] = useState('');
                 m="2"
                 cursor="pointer"
                 onClick={() => handlePuppyClick(puppy)}
+                
               >
                 <CardBody >
                   <Image src={puppy.photoUrl} alt="pup" borderRadius="lg" />
@@ -276,9 +289,7 @@ const [searchQuery, setSearchQuery] = useState('');
                     <Button onClick={handleAdoptClick} variant="solid" colorScheme="blue">
                       Adopt now
                     </Button>
-                    <Button variant="ghost" colorScheme="blue">
-                      Add to cart
-                    </Button>
+                    
                   </ButtonGroup>
                 </CardFooter>
               </Card>
@@ -293,6 +304,7 @@ const [searchQuery, setSearchQuery] = useState('');
         onClose={closeDrawer}
         puppy={selectedPuppy}
         isAdoptionFormOpenForm={isAdoptionFormOpen}
+        isPuppyInfoOpen={isPuppyInfoOpen}
       />
     </div>
   );

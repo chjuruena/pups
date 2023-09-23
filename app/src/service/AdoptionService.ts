@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000'; // Replace with your JSON-Server URL
+const API_BASE_URL = 'http://localhost:3001'; // Replace with your JSON-Server URL
 
-export const adoptionService = {
+export const AdoptionService = {
   async submitAdoption(adoptionDetails) {
     try {
       const response = await axios.post(`${API_BASE_URL}/adopters`, adoptionDetails);
