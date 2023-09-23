@@ -20,6 +20,7 @@ import {
   ButtonGroup,
   Button,
   Spacer,
+  Input,
 } from '@chakra-ui/react';
 // import PuppyDetailsDrawer from './PuppyDetailsDrawer';
 
@@ -45,6 +46,18 @@ const PuppyDetailsDrawer = ({ isOpen, onClose, puppy }) => {
 };
 
 export const PuppyList = () => {
+
+// for Filter
+const [breedFilter, setBreedFilter] = useState('');
+const [ageFilter, setAgeFilter] = useState('');
+const [nameFilter, setNameFilter] = useState('');
+const [traitFilter, setTraitFilter] = useState('');
+const [genderFilter, setGenderFilter] = useState('');
+const [sizeFilter, setSizeFilter] = useState('');
+
+const [searchQuery, setSearchQuery] = useState('');
+
+
   const [puppies, setPuppies] = useState([]);
   const [selectedPuppy, setSelectedPuppy] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -76,8 +89,21 @@ export const PuppyList = () => {
 
   return (
     <div>
+        <Input variant='outline'
+  type="text"
+  placeholder="Search for breed, age, name, trait, gender, or size"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+/>
+
       <Flex>
-        {puppies.map((puppy) => (
+      {puppies
+    .filter((puppy) => {
+      const searchLowerCase = searchQuery.toLowerCase();
+      const puppyData = `${puppy.breed} ${puppy.age} ${puppy.name} ${puppy.traits} ${puppy.gender} ${puppy.size}`.toLowerCase();
+      return puppyData.includes(searchLowerCase);
+    })
+        .map((puppy) => (
           <>
             {/* //   <Box key={puppy.id} borderWidth="1px" borderRadius="lg" p="4" m="2" cursor="pointer" onClick={() => handlePuppyClick(puppy)}>
         //     <p>Name: {puppy.name}</p>
