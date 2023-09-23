@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Box,
-  Flex,
+  Grid,
   Image,
   Drawer,
   DrawerOverlay,
@@ -21,27 +21,136 @@ import {
   Button,
   Spacer,
   Input,
-} from '@chakra-ui/react';
-// import PuppyDetailsDrawer from './PuppyDetailsDrawer';
+  //carousel
+  IconButton,
+   useBreakpointValue 
 
+} from '@chakra-ui/react';
+
+//carousel
+import Slider from 'react-slick'
+import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi'
+const settings = {
+    dots: true,
+    arrows: false,
+    fade: true,
+    infinite: true,
+    autoplay: true,
+    speed: 500,
+    autoplaySpeed: 5000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  }
+// import PuppyDetailsDrawer from './PuppyDetailsDrawer';
+const  Carousel = ({puppy}) => {
+
+    // As we have used custom buttons, we need a reference variable to
+    // change the state
+    const [slider, setSlider] = React.useState<Slider | null>(null)
+  
+    // These are the breakpoints which changes the position of the
+    // buttons as the screen size changes
+    const top = useBreakpointValue({ base: '90%', md: '50%' })
+    const side = useBreakpointValue({ base: '30%', md: '10px' })
+  
+    // These are the images used in the slide
+    const cards = [
+      'https://images.unsplash.com/photo-1612852098516-55d01c75769a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
+      'https://images.unsplash.com/photo-1627875764093-315831ac12f7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDJ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
+      'https://images.unsplash.com/photo-1571432248690-7fd6980a1ae2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
+    ]
+  
+    return (
+      <Box position={'relative'} height={'600px'} width={'full'} overflow={'hidden'}>
+        {/* CSS files for react-slick */}
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+        />
+        {/* Left Icon */}
+        <IconButton
+          aria-label="left-arrow"
+          colorScheme="messenger"
+          borderRadius="full"
+          position="absolute"
+          left={side}
+          top={top}
+          transform={'translate(0%, -50%)'}
+          zIndex={2}
+          onClick={() => slider?.slickPrev()}>
+          <BiLeftArrowAlt />
+        </IconButton>
+        {/* Right Icon */}
+        <IconButton
+          aria-label="right-arrow"
+          colorScheme="messenger"
+          borderRadius="full"
+          position="absolute"
+          right={side}
+          top={top}
+          transform={'translate(0%, -50%)'}
+          zIndex={2}
+          onClick={() => slider?.slickNext()}>
+          <BiRightArrowAlt />
+        </IconButton>
+        {/* Slider */}
+        <Slider {...settings} ref={(slider) => setSlider(slider)}>
+          {cards.map((url, index) => (
+            <Box
+              key={index}
+              height={'6xl'}
+              position="relative"
+              backgroundPosition="center"
+              backgroundRepeat="no-repeat"
+              backgroundSize="cover"
+              backgroundImage={`url(${url})`}
+            />
+          ))}
+        </Slider>
+      </Box>
+    )
+  }
+  
 const PuppyDetailsDrawer = ({ isOpen, onClose, puppy }) => {
   if (!puppy) {
     return null;
   }
   return (
-    <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
-      <DrawerOverlay />
-      <DrawerContent>
-        <DrawerCloseButton />
-        <DrawerHeader>Puppy Details</DrawerHeader>
-        <DrawerBody>
-          <p>Name: {puppy.name}</p>
-          <p>Breed: {puppy.breed}</p>
-          <p>Age: {puppy.age}</p>
-          <p>Description: {puppy.description}</p>
-        </DrawerBody>
-      </DrawerContent>
-    </Drawer>
+    <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={'xl'}>
+    <DrawerOverlay />
+    <DrawerContent>
+      <DrawerCloseButton />
+      <DrawerHeader>Puppy Details</DrawerHeader>
+      <DrawerBody>
+        {/* <Box>
+        <Image boxSize='600px'  src={puppy.photoUrl} alt="pup" borderRadius="sm" />
+
+        </Box> */}
+        {<Carousel puppy={puppy}/>}
+
+        <p>Name: {puppy.name}</p>
+        <p>Breed: {puppy.breed}</p>
+        <p>Age: {puppy.age}</p>
+        <p>Gender: {puppy.gender}</p>
+        <p>Size: {puppy.size}</p>
+        <p>Is Vaccinated: {puppy.isVaccinated ? "Yes" : "No"}</p>
+        <p>Is Neutered/Spayed: {puppy.isNeutered ? "Yes" : "No"}</p>
+        <p>Personality Traits: {puppy.traits.join(', ')}</p>
+        <p>Personality Description: {puppy.personalityTraits}</p>
+        <p>Vaccination Records: {puppy.vaccinationRecords}</p>
+        <p>Spaying/Neutering Status: {puppy.spayingNeuteringStatus}</p>
+        <p>Special Needs: {puppy.specialNeeds}</p>
+        <p>Notes: {puppy.notes}</p>
+      </DrawerBody>
+    </DrawerContent>
+  </Drawer>
+  
   );
 };
 
@@ -62,7 +171,7 @@ const [searchQuery, setSearchQuery] = useState('');
   const [selectedPuppy, setSelectedPuppy] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const apiUrl = 'https://run.mocky.io/v3/d668fcb2-b4a2-484f-8c31-2c2f74f8fa21';
+  const apiUrl = 'https://run.mocky.io/v3/75e69216-0adb-4ecb-867b-5415c99440d4';
 
   useEffect(() => {
     axios
@@ -96,7 +205,7 @@ const [searchQuery, setSearchQuery] = useState('');
   onChange={(e) => setSearchQuery(e.target.value)}
 />
 
-      <Flex>
+<Grid templateColumns='repeat(4, 1fr)' gap={2}>
       {puppies
     .filter((puppy) => {
       const searchLowerCase = searchQuery.toLowerCase();
@@ -105,13 +214,6 @@ const [searchQuery, setSearchQuery] = useState('');
     })
         .map((puppy) => (
           <>
-            {/* //   <Box key={puppy.id} borderWidth="1px" borderRadius="lg" p="4" m="2" cursor="pointer" onClick={() => handlePuppyClick(puppy)}>
-        //     <p>Name: {puppy.name}</p>
-        //     <p>Breed: {puppy.breed}</p>
-        //     <p>Age: {puppy.age}</p>
-        //     <Image boxSize='200px' objectFit='cover' src={puppy.photoUrl} alt='pup' />
-
-        //   </Box> */}
 
             <Box>
               <Card
@@ -149,10 +251,10 @@ const [searchQuery, setSearchQuery] = useState('');
                 </CardFooter>
               </Card>
             </Box>
-            <Spacer />
+            {/* <Spacer /> */}
           </>
         ))}
-      </Flex>
+      </Grid>
 
       <PuppyDetailsDrawer
         isOpen={isDrawerOpen}
