@@ -22,7 +22,7 @@ import axios from 'axios';
 import { AdoptionService } from '../service/AdoptionService';
 import { error } from 'console';
 
-export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
+export const AdoptionForm = ({ onClose, puppy }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -61,11 +61,7 @@ export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
     });
   };
   const handleAdoptionSubmit = async () => {
-    console.log('Adoption Form Submitted:');
-    console.log('Name:', name);
-    console.log('Email:', email);
-    console.log('Phone:', phone);
-    console.log('Message:', message);
+
 
     const adoptionDetails = {
       name,
@@ -77,7 +73,6 @@ export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
 
     try {
       const response = await AdoptionService.submitAdoption(adoptionDetails);
-      console.log('Adoption request submitted successfully:', response);
       // Handle success, e.g., show a confirmation message
       <ShowStatus stat={true} />;
       showToast('success', 'Adoption request sent to admin'); // Show success toast
@@ -85,8 +80,6 @@ export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
     } catch (error) {
       <ShowStatus stat={true} />;
       showToast('success', 'Failed to submit adoption request'); // Show fail toast
-
-      console.error('Failed to submit adoption request:', error);
       // Handle failure, e.g., show an error message to the user
     }
   };
@@ -118,12 +111,6 @@ export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
                 </Text>
               </Stack>
             </CardBody>
-
-            <CardFooter>
-              {/* <Button variant='solid' colorScheme='blue'>
-                Buy Latte
-            </Button> */}
-            </CardFooter>
           </Stack>
         </Card>
       </Box>
@@ -177,5 +164,3 @@ export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
     </>
   );
 };
-
-// export default AdoptionForm;

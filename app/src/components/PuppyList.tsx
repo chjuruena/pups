@@ -136,7 +136,6 @@ const PuppyDetailsDrawer = ({
 
   const handleAdoptClick = () => {
     setAdoptionFormOpen(true);
-    console.log(isAdoptionFormOpen);
   };
 
   const handleCloseAdoptionForm = () => {
@@ -145,7 +144,7 @@ const PuppyDetailsDrawer = ({
 
   return (
     <Drawer
-      closeOnOverlayClick={false}
+      // closeOnOverlayClick={false}
       isOpen={isOpen}
       placement="right"
       onClose={onClose}
@@ -206,18 +205,18 @@ export const PuppyList = () => {
       try {
         // Fetch the list of puppies from your backend API
         const response = await PuppyService.fetchPuppies();
-        console.log('Fetch all puppies:', response);
+        // // console.log('Fetch all puppies:', response);
         setPuppies(response);
         // Handle success, e.g., show a confirmation message
       } catch (error) {
-        console.error('Failed to fetch all puppies:', error);
+        // console.error('Failed to fetch all puppies:', error);
         // Handle failure, e.g., show an error message to the user
       }
     };
 
     fetchPuppies();
     if (!isDrawerOpen) {
-      console.log('drawer is closed');
+      // console.log('drawer is closed');
       setAdoptionFormOpen(false);
     }
   }, [isDrawerOpen]); // Empty dependency array to run the effect only once
@@ -234,10 +233,9 @@ export const PuppyList = () => {
     setPuppyInfoOpen(true);
     setSelectedPuppy(null);
     setIsDrawerOpen(false);
-
-    console.log('close drawer');
   };
   const handleAdoptClick = () => {
+    // setIsDrawerOpen(true);
     setAdoptionFormOpen(true);
     setPuppyInfoOpen(false);
   };

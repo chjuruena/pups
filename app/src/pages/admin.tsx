@@ -47,11 +47,11 @@ const Admin = () => {
     try {
       // Fetch the list of puppies from your backend API
       const response = await PuppyService.fetchPuppies();
-      console.log('Fetch all puppies:', response);
+      // // console.log('Fetch all puppies:', response);
       setAllPuppies(response);
       // Handle success, e.g., show a confirmation message
     } catch (error) {
-      console.error('Failed to fetch all puppies:', error);
+      // console.error('Failed to fetch all puppies:', error);
       // Handle failure, e.g., show an error message to the user
     }
   };
@@ -96,11 +96,8 @@ const Admin = () => {
 
   const handleSaveClick = async (updatedPuppy) => {
     // Update the puppy's data on the backend
-    //   axios.put(`/api/puppies/${puppy.id}`, puppy).then(() => {
-    //     setEditedPuppy(null);
-    //   });
 
-    console.log('Edited puppy', updatedPuppy);
+    // console.log('Edited puppy', updatedPuppy);
     if (updatedPuppy.id) {
       //edit Puppy
       try {
@@ -108,7 +105,7 @@ const Admin = () => {
           updatedPuppy.id,
           updatedPuppy,
         );
-        console.log('Edit a puppy:', response);
+        // console.log('Edit a puppy:', response);
         // Handle success, e.g., show a confirmation message
         showToast('success', 'Puppy successfully edited'); // Show success toast
 
@@ -120,17 +117,17 @@ const Admin = () => {
       }
     } else {
       //add Pupp
-      console.log('Add puppy');
-      console.log('Add puppy');
-      console.log('Add puppy');
+      // console.log('Add puppy');
+      // console.log('Add puppy');
+      // console.log('Add puppy');
       const newPuppy = {
         ...updatedPuppy, // Spread the original object
         id: allPuppies.length + 1, // Update the 'name' property
       };
-      console.log(newPuppy);
+      // console.log(newPuppy);
       try {
         const response = await PuppyService.createPuppy(newPuppy);
-        console.log('Add a puppy:', response);
+        // console.log('Add a puppy:', response);
         // Handle success, e.g., show a confirmation message
         fetchPuppies();
         onClose();
@@ -148,7 +145,7 @@ const Admin = () => {
     // Delete the puppy from the backend
     try {
       const response = await PuppyService.deletePuppy(puppyId);
-      console.log('Delete a puppy data:', response);
+      // console.log('Delete a puppy data:', response);
       showToast('success', 'Puppy successfully Delete from records'); // Show success toast
 
       // Handle success, e.g., show a confirmation message
@@ -161,7 +158,7 @@ const Admin = () => {
     }
   };
   const onSavePuppy = (updatedPuppy) => {
-    console.log('Edited puppy', updatedPuppy);
+    // console.log('Edited puppy', updatedPuppy);
   };
 
   return (

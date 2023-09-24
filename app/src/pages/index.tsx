@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {PuppyHome} from '@/components/PuppyHome';
 // import { AdminPanel } from '@/components/AdminPanel';
 import  Admin  from './admin';
+import NotFound from './404';
 const IndexPage: React.FC = () => {
   return (
     <Router>
@@ -11,7 +12,6 @@ const IndexPage: React.FC = () => {
         <Routes>
           <Route path="/" element={<PuppyHome />} />
           <Route path="/admin" element={<Admin />} />
-          {/* Define other routes here */}
         </Routes>
       </Flex>
     </Router>
