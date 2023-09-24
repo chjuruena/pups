@@ -28,15 +28,12 @@ interface Props {
 
 const links = ['Admin', 'Projects', 'Team'];
 
-
 export const PuppyHome: React.FC = () => {
-
   return (
     <>
-    <Box>
+      <Box>
         <Nav links={links} />
-    </Box>
-      
+      </Box>
 
       <Box p={4}>{<PuppyList />}</Box>
     </>
