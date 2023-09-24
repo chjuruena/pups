@@ -43,6 +43,8 @@ After installing the dependencies, you can set up and run the application:
      ```
    - This is important as this is the server that holds all the puppy data and adopter data 
 
+4. Open the app on `http://localhost:8000/` 
+
 Some notes:
 1. The Puppy and  Adopters data is saved in `pups\app\json-server`. This serves as the api server
 
