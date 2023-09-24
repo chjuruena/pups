@@ -26,7 +26,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const links = ['Admin', 'Projects', 'Team'];
+const links = ['Admin'];
 
 export const PuppyHome: React.FC = () => {
   return (

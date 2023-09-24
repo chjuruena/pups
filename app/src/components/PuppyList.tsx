@@ -56,11 +56,6 @@ const Carousel = ({ puppy }) => {
   const side = useBreakpointValue({ base: '30%', md: '10px' });
 
   // These are the images used in the slide
-  const cards = [
-    'https://images.unsplash.com/photo-1612852098516-55d01c75769a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
-    'https://images.unsplash.com/photo-1627875764093-315831ac12f7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDJ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
-    'https://images.unsplash.com/photo-1571432248690-7fd6980a1ae2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60',
-  ];
 
   return (
     <Box
@@ -110,7 +105,7 @@ const Carousel = ({ puppy }) => {
       </IconButton>
       {/* Slider */}
       <Slider {...settings} ref={(slider) => setSlider(slider)}>
-        {cards.map((url, index) => (
+        {puppy.cards.map((url, index) => (
           <Box
             key={index}
             height={'6xl'}
@@ -124,7 +119,7 @@ const Carousel = ({ puppy }) => {
       </Slider>
     </Box>
   );
-};;
+};
 
 const PuppyDetailsDrawer = ({
   isOpen,
@@ -195,14 +190,6 @@ const PuppyDetailsDrawer = ({
 };
 
 export const PuppyList = () => {
-  // for Filter
-  const [breedFilter, setBreedFilter] = useState('');
-  const [ageFilter, setAgeFilter] = useState('');
-  const [nameFilter, setNameFilter] = useState('');
-  const [traitFilter, setTraitFilter] = useState('');
-  const [genderFilter, setGenderFilter] = useState('');
-  const [sizeFilter, setSizeFilter] = useState('');
-
   const [searchQuery, setSearchQuery] = useState('');
 
   const [puppies, setPuppies] = useState([]);
@@ -270,8 +257,14 @@ export const PuppyList = () => {
           puppies
             .filter((puppy) => {
               const searchLowerCase = searchQuery.toLowerCase();
-              const puppyData =
-                `${puppy.breed} ${puppy.age} ${puppy.name} ${puppy.traits} ${puppy.gender} ${puppy.size}`.toLowerCase();
+              const puppyData = `${puppy.breed} ${puppy.age} ${puppy.name} ${
+                puppy.traits
+              } ${puppy.gender} ${puppy.size}   ${puppy.isVaccinated} ${
+                puppy.isNeutered
+              } ${puppy.traits.join(',')} ${puppy.vaccinationRecords} ${
+                puppy.spayingNeuteringStatus
+              } ${puppy.specialNeeds} ${puppy.notes}
+                `.toLowerCase();
               return puppyData.includes(searchLowerCase);
             })
             .map((puppy) => (
@@ -294,7 +287,8 @@ export const PuppyList = () => {
                       <Text>Age: {puppy.age}</Text>
                       <Text>Traits: {puppy.traits}</Text>
                       <Text color="blue.600" fontSize="2xl">
-                        $450
+                        Certified good{' '}
+                        {puppy.gender == 'female' ? 'girl' : 'boy'}!
                       </Text>
                     </Stack>
                   </CardBody>

@@ -16,6 +16,7 @@ import {
   Spacer,
   Alert,
   AlertIcon,
+  useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { AdoptionService } from '../service/AdoptionService';
@@ -26,6 +27,7 @@ export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
+  const toast = useToast();
 
   // Inside your component
   const ShowStatus = (stat) => {
@@ -37,6 +39,26 @@ export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
         </Alert>
       </Stack>
     );
+  };
+  const showToast = (status, description) => {
+    // Set the background color based on the status (success or fail)
+    const bgColor = status === 'success' ? 'green.400' : 'red.400';
+
+    // Set the icon based on the status (success or fail)
+    const icon = status === 'success' ? '✅' : '❌';
+
+    // Show the toast message
+    toast({
+      title: icon,
+      description,
+      status,
+      duration: 5000,
+      isClosable: true,
+      position: 'top-right',
+      variant: 'solid',
+      backgroundColor: bgColor,
+      color: 'white',
+    });
   };
   const handleAdoptionSubmit = async () => {
     console.log('Adoption Form Submitted:');
@@ -58,9 +80,11 @@ export const AdoptionForm = ({ onClose, puppy, closeDrawer }) => {
       console.log('Adoption request submitted successfully:', response);
       // Handle success, e.g., show a confirmation message
       <ShowStatus stat={true} />;
+      showToast('success', 'Adoption request sent to admin'); // Show success toast
       onClose();
     } catch (error) {
       <ShowStatus stat={true} />;
+      showToast('success', 'Failed to submit adoption request'); // Show fail toast
 
       console.error('Failed to submit adoption request:', error);
       // Handle failure, e.g., show an error message to the user

@@ -19,6 +19,11 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Flex,
+  Heading,
+  Spacer,
+  ButtonGroup,
+  useToast,
 } from '@chakra-ui/react';
 
 import { CheckIcon, CloseIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
@@ -32,6 +37,7 @@ const Admin = () => {
   const [editedPuppy, setEditedPuppy] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   useEffect(() => {
     fetchPuppies();
@@ -55,10 +61,37 @@ const Admin = () => {
     setEditedPuppy(puppy);
   };
 
+  const handleAddPuppy = () => {
+    setIsModalOpen(true);
+    onOpen();
+    setEditedPuppy({});
+  };
+
   const closeEditModal = () => {
     setEditedPuppy(null);
     setIsModalOpen(false);
     onClose();
+  };
+
+  const showToast = (status, description) => {
+    // Set the background color based on the status (success or fail)
+    const bgColor = status === 'success' ? 'green.400' : 'red.400';
+
+    // Set the icon based on the status (success or fail)
+    const icon = status === 'success' ? '✅' : '❌';
+
+    // Show the toast message
+    toast({
+      title: icon,
+      description,
+      status,
+      duration: 5000,
+      isClosable: true,
+      position: 'top-right',
+      variant: 'solid',
+      backgroundColor: bgColor,
+      color: 'white',
+    });
   };
 
   const handleSaveClick = async (updatedPuppy) => {
@@ -66,20 +99,48 @@ const Admin = () => {
     //   axios.put(`/api/puppies/${puppy.id}`, puppy).then(() => {
     //     setEditedPuppy(null);
     //   });
-    console.log('Edited puppy', updatedPuppy);
 
-    try {
-      const response = await PuppyService.updatePuppy(
-        updatedPuppy.id,
-        updatedPuppy,
-      );
-      console.log('Edit a puppy:', response);
-      // Handle success, e.g., show a confirmation message
-      fetchPuppies();
-      onClose();
-    } catch (error) {
-      console.error('Failed to Edit a puppy:', error);
-      // Handle failure, e.g., show an error message to the user
+    console.log('Edited puppy', updatedPuppy);
+    if (updatedPuppy.id) {
+      //edit Puppy
+      try {
+        const response = await PuppyService.updatePuppy(
+          updatedPuppy.id,
+          updatedPuppy,
+        );
+        console.log('Edit a puppy:', response);
+        // Handle success, e.g., show a confirmation message
+        showToast('success', 'Puppy successfully edited'); // Show success toast
+
+        fetchPuppies();
+        onClose();
+      } catch (error) {
+        console.error('Failed to Edit a puppy:', error);
+        // Handle failure, e.g., show an error message to the user
+      }
+    } else {
+      //add Pupp
+      console.log('Add puppy');
+      console.log('Add puppy');
+      console.log('Add puppy');
+      const newPuppy = {
+        ...updatedPuppy, // Spread the original object
+        id: allPuppies.length + 1, // Update the 'name' property
+      };
+      console.log(newPuppy);
+      try {
+        const response = await PuppyService.createPuppy(newPuppy);
+        console.log('Add a puppy:', response);
+        // Handle success, e.g., show a confirmation message
+        fetchPuppies();
+        onClose();
+        showToast('success', 'New puppy successfully added'); // Show success toast
+      } catch (error) {
+        showToast('fail', 'FAILED adding New puppy');
+
+        console.error('Failed to Add a puppy:', error);
+        // Handle failure, e.g., show an error message to the user
+      }
     }
   };
 
@@ -88,28 +149,40 @@ const Admin = () => {
     try {
       const response = await PuppyService.deletePuppy(puppyId);
       console.log('Delete a puppy data:', response);
+      showToast('success', 'Puppy successfully Delete from records'); // Show success toast
+
       // Handle success, e.g., show a confirmation message
       fetchPuppies();
     } catch (error) {
+      showToast('fail', 'Puppy FAILED to be Deleted from records'); // Show success toast
+
       console.error('Failed to Delete a puppy data:', error);
       // Handle failure, e.g., show an error message to the user
     }
   };
   const onSavePuppy = (updatedPuppy) => {
     console.log('Edited puppy', updatedPuppy);
-    // setEditedPuppy(updatedPuppy)
   };
 
   return (
     <>
       <Nav links={['Puppies']} />
-      <Box p={20}>
+      <Flex minWidth="max-content" alignItems="center" gap="2">
+        <Box p="2">
+          <Heading size="md">
+            Admin Dashboard to Add, Edit, and Delete Pups
+          </Heading>
+        </Box>
+        <Spacer />
+        <ButtonGroup gap="2">
+          <Button colorScheme="teal" size="lg" onClick={handleAddPuppy}>
+            Add puppies
+          </Button>
+        </ButtonGroup>
+      </Flex>
+      <Box p={10}>
         <TableContainer>
           <Table variant="striped" colorScheme="teal">
-            <TableCaption placement="top">
-              Admin Dashboard to Add, Edit, and Delete Pups
-            </TableCaption>
-
             <Thead>
               <Tr>
                 <Th>Name</Th>
@@ -152,12 +225,10 @@ const Admin = () => {
               <ModalHeader>Edit Puppy</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                {editedPuppy && (
-                  <EditPuppyForm
-                    puppyData={editedPuppy}
-                    onSave={handleSaveClick}
-                  />
-                )}
+                <EditPuppyForm
+                  puppyData={editedPuppy}
+                  onSave={handleSaveClick}
+                />
               </ModalBody>
             </ModalContent>
           </Modal>

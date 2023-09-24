@@ -1,5 +1,4 @@
-'use client';
-
+import React from 'react';
 import {
   Box,
   Flex,
@@ -18,20 +17,22 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import { PuppyList } from './PuppyList';
 import { Link } from 'react-router-dom';
 
 interface Props {
   children: React.ReactNode;
+  links: string[];
 }
-
 
 const NavLink = (props: Props) => {
   const { children } = props;
-
+  let toValue = '/';
+  if (children.toLowerCase() !== 'puppies') {
+    toValue = `/${children.toLowerCase()}`;
+  }
   return (
     <Link
-      to={`/${children.toLowerCase()}`} // Use the route path here
+      to={toValue} // Use the route path here
       px={2}
       py={1}
       rounded={'md'}
@@ -45,7 +46,7 @@ const NavLink = (props: Props) => {
   );
 };
 
-export const Nav: React.FC = ({links}) => {
+export const Nav: React.FC<Props> = ({ links }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -87,12 +88,6 @@ export const Nav: React.FC = ({links}) => {
                   }
                 />
               </MenuButton>
-              <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
-                <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
-              </MenuList>
             </Menu>
           </Flex>
         </Flex>
@@ -100,7 +95,7 @@ export const Nav: React.FC = ({links}) => {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              {Links.map((link) => (
+              {links.map((link) => (
                 <NavLink key={link}>{link}</NavLink>
               ))}
             </Stack>
