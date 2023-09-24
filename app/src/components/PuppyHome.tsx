@@ -19,19 +19,20 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import { PuppyList } from './PuppyList';
+import { Link } from 'react-router-dom';
 
 interface Props {
   children: React.ReactNode;
 }
 
-const Links = ['Dashboard', 'Projects', 'Team'];
+const Links = ['Admin', 'Projects', 'Team'];
 
 const NavLink = (props: Props) => {
   const { children } = props;
 
   return (
-    <Box
-      as="a"
+    <Link
+      to={`/${children.toLowerCase()}`} // Use the route path here
       px={2}
       py={1}
       rounded={'md'}
@@ -39,10 +40,9 @@ const NavLink = (props: Props) => {
         textDecoration: 'none',
         bg: useColorModeValue('gray.200', 'gray.700'),
       }}
-      href={'#'}
     >
       {children}
-    </Box>
+    </Link>
   );
 };
 

@@ -31,6 +31,9 @@ import {
 import Slider from 'react-slick'
 import { BiLeftArrowAlt, BiRightArrowAlt } from 'react-icons/bi'
 
+//service
+import PuppyService from '@/service/PuppyService';
+
 import { AdoptionForm } from './AdoptionForm';
 const settings = {
     dots: true,
@@ -201,22 +204,30 @@ const [searchQuery, setSearchQuery] = useState('');
   const [isPuppyInfoOpen, setPuppyInfoOpen] = useState(true);
 
   
+  
   useEffect(() => {
-    axios
-      .get(apiUrlPuppies)
-      .then((response) => {
-        setPuppies(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching puppies:', error);
-      });
-      console.log(isDrawerOpen)
-      if (!isDrawerOpen) {
+    const fetchPuppies = async () => {
+      try {
+        // Fetch the list of puppies from your backend API
+        const response = await PuppyService.fetchPuppies();
+        console.log('Fetch all puppies:', response);
+        setPuppies(response);
+        // Handle success, e.g., show a confirmation message
+      } catch (error) {
+        console.error('Failed to fetch all puppies:', error);
+        // Handle failure, e.g., show an error message to the user
+      }
+    };
+
+    fetchPuppies();
+    if (!isDrawerOpen) {
         console.log('drawer is closed')
         setAdoptionFormOpen(false);
       }
-      }, [isDrawerOpen]);
+  }, [isDrawerOpen]); // Empty dependency array to run the effect only once
 
+
+  
   const handlePuppyClick = (puppy) => {
     setSelectedPuppy(puppy);
     setIsDrawerOpen(true);
@@ -250,54 +261,50 @@ const [searchQuery, setSearchQuery] = useState('');
 />
 
 <Grid templateColumns='repeat(4, 1fr)' gap={2}>
-      {puppies
-    .filter((puppy) => {
-      const searchLowerCase = searchQuery.toLowerCase();
-      const puppyData = `${puppy.breed} ${puppy.age} ${puppy.name} ${puppy.traits} ${puppy.gender} ${puppy.size}`.toLowerCase();
-      return puppyData.includes(searchLowerCase);
-    })
-        .map((puppy) => (
-          <>
+  {puppies &&
+    puppies
+      .filter((puppy) => {
+        const searchLowerCase = searchQuery.toLowerCase();
+        const puppyData = `${puppy.breed} ${puppy.age} ${puppy.name} ${puppy.traits} ${puppy.gender} ${puppy.size}`.toLowerCase();
+        return puppyData.includes(searchLowerCase);
+      })
+      .map((puppy) => (
+        <Box key={puppy.id}>
+          <Card
+            maxW="sm"
+            key={puppy.id}
+            borderWidth="1px"
+            borderRadius="lg"
+            p="4"
+            m="2"
+            cursor="pointer"
+            onClick={() => handlePuppyClick(puppy)}
+          >
+            <CardBody>
+              <Image src={puppy.photoUrl} alt="pup" borderRadius="lg" />
+              <Stack mt="6" spacing="3">
+                <Heading size="md">{puppy.name} </Heading>
+                <Text>Breed: {puppy.breed}</Text>
+                <Text>Age: {puppy.age}</Text>
+                <Text>Traits: {puppy.traits}</Text>
+                <Text color="blue.600" fontSize="2xl">
+                  $450
+                </Text>
+              </Stack>
+            </CardBody>
+            <Divider />
+            <CardFooter>
+              <ButtonGroup spacing="2">
+                <Button onClick={handleAdoptClick} variant="solid" colorScheme="blue">
+                  Adopt now
+                </Button>
+              </ButtonGroup>
+            </CardFooter>
+          </Card>
+        </Box>
+      ))}
+</Grid>
 
-            <Box key={puppy.id}>
-              <Card
-                maxW="sm"
-                key={puppy.id}
-                borderWidth="1px"
-                borderRadius="lg"
-                p="4"
-                m="2"
-                cursor="pointer"
-                onClick={() => handlePuppyClick(puppy)}
-                
-              >
-                <CardBody >
-                  <Image src={puppy.photoUrl} alt="pup" borderRadius="lg" />
-                  <Stack mt="6" spacing="3">
-                    <Heading size="md">{puppy.name} </Heading>
-                    <Text>Breed: {puppy.breed}</Text>
-                    <Text>Age: {puppy.age}</Text>
-                    <Text>Traits: {puppy.traits}</Text>
-                    <Text color="blue.600" fontSize="2xl">
-                      $450
-                    </Text>
-                  </Stack>
-                </CardBody>
-                <Divider />
-                <CardFooter>
-                  <ButtonGroup spacing="2">
-                    <Button onClick={handleAdoptClick} variant="solid" colorScheme="blue">
-                      Adopt now
-                    </Button>
-                    
-                  </ButtonGroup>
-                </CardFooter>
-              </Card>
-            </Box>
-            {/* <Spacer /> */}
-          </>
-        ))}
-      </Grid>
 
       <PuppyDetailsDrawer
         isOpen={isDrawerOpen}
