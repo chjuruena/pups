@@ -43,5 +43,8 @@ After installing the dependencies, you can set up and run the application:
      ```
    - This is important as this is the server that holds all the puppy data and adopter data 
 
+Some notes:
+1. The Puppy and  Adopters data is saved in `pups\app\json-server`. This serves as the api server
+
 Now, your development environment should be set up and both the Gatsby application and JSON Server should be running.
 
